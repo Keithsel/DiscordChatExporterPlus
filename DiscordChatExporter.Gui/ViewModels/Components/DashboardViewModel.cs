@@ -283,6 +283,10 @@ public partial class DashboardViewModel : ViewModelBase
 
                         Interlocked.Increment(ref successfulExportCount);
                     }
+                    catch (ChannelEmptyException ex)
+                    {
+                        _snackbarManager.Notify(ex.Message.TrimEnd('.'));
+                    }
                     catch (DiscordChatExporterException ex) when (!ex.IsFatal)
                     {
                         _snackbarManager.Notify(ex.Message.TrimEnd('.'));
