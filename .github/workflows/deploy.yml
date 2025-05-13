@@ -59,6 +59,8 @@ jobs:
         run: >
           dotnet publish ${{ matrix.app }}
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          -p:CSharpier_Bypass=true
+          -p:PublishMacOSBundle=${{ startsWith(matrix.rid, 'osx-') }}
           --output ${{ matrix.app }}/bin/publish/
           --configuration Release
           --runtime ${{ matrix.rid }}
@@ -132,7 +134,14 @@ jobs:
 
       - name: Set permissions
         if: ${{ !startsWith(matrix.rid, 'win-') }}
-        run: chmod +x ${{ matrix.app }}/${{ matrix.asset }}
+        run: |
+          if [ -f ${{ matrix.app }}/${{ matrix.asset }} ]; then
+              chmod +x ${{ matrix.app }}/${{ matrix.asset }}
+          fi
+          
+          if [ -f ${{ matrix.app }}/${{ matrix.asset }}.app/Contents/MacOS/${{ matrix.asset }} ]; then
+              chmod +x ${{ matrix.app }}/${{ matrix.asset }}.app/Contents/MacOS/${{ matrix.asset }}
+          fi
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
