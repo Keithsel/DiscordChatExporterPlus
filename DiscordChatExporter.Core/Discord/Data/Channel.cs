@@ -76,6 +76,7 @@ public partial record Channel
             ?? json.GetPropertyOrNull("recipients")
                 ?.EnumerateArrayOrNull()
                 ?.Select(User.Parse)
+                .OrderBy(u => u.Id)
                 .Select(u => u.DisplayName)
                 .Pipe(s => string.Join(", ", s))
             // Fallback
