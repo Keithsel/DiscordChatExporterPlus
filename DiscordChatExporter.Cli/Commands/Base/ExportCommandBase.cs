@@ -364,42 +364,4 @@ public abstract class ExportCommandBase : DiscordCommandBase
         if (errorsByChannel.Count >= unwrappedChannels.Count)
             throw new CommandException("Export failed.");
     }
-
-    protected async ValueTask ExportAsync(IConsole console, IReadOnlyList<Snowflake> channelIds)
-    {
-        var cancellationToken = console.RegisterCancellationHandler();
-
-        await console.Output.WriteLineAsync("Resolving channel(s)...");
-
-        var channels = new List<Channel>();
-        var channelsByGuild = new Dictionary<Snowflake, IReadOnlyList<Channel>>();
-
-        foreach (var channelId in channelIds)
-        {
-            var channel = await Discord.GetChannelAsync(channelId, cancellationToken);
-
-            // Unwrap categories
-            if (channel.IsCategory)
-            {
-                var guildChannels =
-                    channelsByGuild.GetValueOrDefault(channel.GuildId) ??
-                    await Discord.GetGuildChannelsAsync(channel.GuildId, cancellationToken);
-
-                foreach (var guildChannel in guildChannels)
-                {
-                    if (guildChannel.Parent?.Id == channel.Id)
-                        channels.Add(guildChannel);
-                }
-
-                // Cache the guild channels to avoid redundant work
-                channelsByGuild[channel.GuildId] = guildChannels;
-            }
-            else
-            {
-                channels.Add(channel);
-            }
-        }
-
-        await ExportAsync(console, channels);
-    }
 }
