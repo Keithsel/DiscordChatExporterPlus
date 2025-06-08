@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
@@ -11,7 +10,6 @@
     <PackageReference Include="Polly" Version="8.5.2" />
     <PackageReference Include="RazorBlade" Version="0.9.0" />
     <PackageReference Include="Superpower" Version="3.0.0" />
-    <PackageReference Include="WebMarkupMin.Core" Version="2.17.0" />
+    <PackageReference Include="WebMarkupMin.Core" Version="2.19.0" />
   </ItemGroup>
-
 </Project>
